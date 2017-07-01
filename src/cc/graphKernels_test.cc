@@ -134,7 +134,8 @@ igraph_t readiGraph(const char *input) {
     cerr << "ERROR: cannot open " << input << endl;
     exit(1);
   }
-  res = igraph_read_graph_graphml(&g, fp, 0);
+  //res = igraph_read_graph_graphml(&g, fp, 0);
+  res = igraph_read_graph_gml(&g, fp);
   if (res == IGRAPH_PARSEERROR) {
     cerr << "ERROR: There is a problem reading the file, or the file is syntactically incorrect." << endl;
     exit(1);

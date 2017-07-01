@@ -1,0 +1,7 @@
+#./gkernel -k GR -p 0.01 -i taxi-data/taxi-12-00.list -g taxi-data/graphml/12/c_tract/ -o taxi-12.kernel
+#./gkernel -k kR -p 1,2,1 -i taxi-data/taxi-12-00.list -g taxi-data/graphml/12/c_tract/ -o taxi-12.kernel
+#./gkernel -k WL -p 5 -i taxi-data/taxi-12-NTA.list -g taxi-data/data/taxi-2014-NTA/12/ -o taxi-12-NTA.kernel
+
+
+#NTA
+./gkernel -k GR -p 0.01 -i taxi-data/taxi-12-NTA.list -g taxi-data/data/taxi-2014-NTA/12/ -o taxi-12-NTA.kernel

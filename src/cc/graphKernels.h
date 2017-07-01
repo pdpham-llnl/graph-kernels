@@ -90,18 +90,17 @@ void graphKernelMatrix(vector<igraph_t>& g, vector<double>& par, string& kernel_
   for (int i = 0; i < n; i++) {
     igraphToEigen(g[i], E[i], V_label[i], &V_count[i], &E_count[i], &D_max[i]);
   }
-
   // compute the Kernel matrix
   if (kernelTable(kernel_name) == 11) {
     WLKernelMatrix(E, V_label, V_count, E_count, D_max, (int)par[0], K);
   } else {
     for (int i = 0; i < n; i++) {
       for (int j = i; j < n; j++) {
-	K(i, j) = computeKernelValue(E[i], E[j], V_label[i], V_label[j], par, kernel_name);
-	K(j, i) = K(i, j);
-      }
-    }
-  }
+       K(i, j) = computeKernelValue(E[i], E[j], V_label[i], V_label[j], par, kernel_name);
+       K(j, i) = K(i, j);
+     }
+   }
+ }
 }
 
 
@@ -110,58 +109,58 @@ void graphKernelMatrix(vector<igraph_t>& g, vector<double>& par, string& kernel_
 // ================================================================ //
 // A hash table for kernel names
 int kernelTable(string& kernel_name) {
-       if (kernel_name.compare("E") == 0) return 1;
-  else if (kernel_name.compare("V")   == 0) return 2;
-  else if (kernel_name.compare("VE")  == 0) return 3;
-  else if (kernel_name.compare("H")   == 0) return 4;
-  else if (kernel_name.compare("EG")  == 0) return 5;
-  else if (kernel_name.compare("VG")  == 0) return 6;
-  else if (kernel_name.compare("VEG") == 0) return 7;
-  else if (kernel_name.compare("GR")  == 0) return 8;
-  else if (kernel_name.compare("ER")  == 0) return 9;
-  else if (kernel_name.compare("kR")  == 0) return 10;
-  else if (kernel_name.compare("WL")  == 0) return 11;
-  else return 1;
+ if (kernel_name.compare("E") == 0) return 1;
+ else if (kernel_name.compare("V")   == 0) return 2;
+ else if (kernel_name.compare("VE")  == 0) return 3;
+ else if (kernel_name.compare("H")   == 0) return 4;
+ else if (kernel_name.compare("EG")  == 0) return 5;
+ else if (kernel_name.compare("VG")  == 0) return 6;
+ else if (kernel_name.compare("VEG") == 0) return 7;
+ else if (kernel_name.compare("GR")  == 0) return 8;
+ else if (kernel_name.compare("ER")  == 0) return 9;
+ else if (kernel_name.compare("kR")  == 0) return 10;
+ else if (kernel_name.compare("WL")  == 0) return 11;
+ else return 1;
 }
 // compute a kernel value of a pair of graphs
 double computeKernelValue(MatrixXi& e1, MatrixXi& e2, vector<int>& v1_label, vector<int>& v2_label, vector<double>& par, string& kernel_name) {
   double K;
   switch (kernelTable(kernel_name)) {
   case 1: // edge histogram kernel
-    K = edgeHistogramKernel(e1, e2, -1.0);
-    break;
+  K = edgeHistogramKernel(e1, e2, -1.0);
+  break;
   case 2: // vertex histogram kernel
-    K = vertexHistogramKernel(v1_label, v2_label, -1.0);
-    break;
+  K = vertexHistogramKernel(v1_label, v2_label, -1.0);
+  break;
   case 3: // vertex-edge histogram kernel
-    K = vertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, -1.0);
-    break;
+  K = vertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, -1.0);
+  break;
   case 4: // vertex-vertex-edge histogram kernel
-    K = vertexVertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, par[0]);
-    break;
+  K = vertexVertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, par[0]);
+  break;
   case 5: // edge histogram kernel (Gaussian)
-    K = edgeHistogramKernel(e1, e2, par[0]);
-    break;
+  K = edgeHistogramKernel(e1, e2, par[0]);
+  break;
   case 6: // vertex histogram kernel (Gaussian)
-    K = vertexHistogramKernel(v1_label, v2_label, par[0]);
-    break;
+  K = vertexHistogramKernel(v1_label, v2_label, par[0]);
+  break;
   case 7: // vertex-edge histogram kernel (Gaussian)
-    K = vertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, par[0]);
-    break;
+  K = vertexEdgeHistogramKernel(e1, e2, v1_label, v2_label, par[0]);
+  break;
   case 8: // geometric random walk kernel
-    K = geometricRandomWalkKernel(e1, e2, v1_label, v2_label, par[0]);
-    break;
+  K = geometricRandomWalkKernel(e1, e2, v1_label, v2_label, par[0]);
+  break;
   case 9: // exponential random walk kernel
-    K = exponentialRandomWalkKernel(e1, e2, v1_label, v2_label, par[0]);
-    break;
+  K = exponentialRandomWalkKernel(e1, e2, v1_label, v2_label, par[0]);
+  break;
   case 10: // k-step random walk kernel
-    K = kstepRandomWalkKernel(e1, e2, v1_label, v2_label, par);
-    break;
+  K = kstepRandomWalkKernel(e1, e2, v1_label, v2_label, par);
+  break;
   default:
-    K = 0;
-    break;
-  }
-  return K;
+  K = 0;
+  break;
+}
+return K;
 }
 
 
@@ -177,24 +176,24 @@ const char *getVlabel(igraph_t g, igraph_vector_t vtypes, igraph_strvector_t vna
   } else if (igraph_strvector_size(&vnames) == 2) {
     for (int i = 0; i < igraph_strvector_size(&vnames); i++) {
       if (strcmp(STR(vnames, i), "id") != 0) {
-	vlabel = STR(vnames, i);
+       vlabel = STR(vnames, i);
 
-	if (VECTOR(vtypes)[i] != IGRAPH_ATTRIBUTE_NUMERIC) {
-	  cerr << "ERROR: Vertex attributes should be numeric values." << endl;
-	  exit(1);
-	}
-	for (int j = 0; j < igraph_vcount(&g); j++) {
-	  if (isnan(VAN(&g, vlabel, j))) {
-	    cerr << "ERROR: Attribute of the vertex " << j << " is missing." << endl;
-	    exit(1);
-	  }
-	}
-      }
-    }
-  } else {
-    vlabel = NULL;
-  }
-  return vlabel;
+       if (VECTOR(vtypes)[i] != IGRAPH_ATTRIBUTE_NUMERIC) {
+         cerr << "ERROR: Vertex attributes should be numeric values." << endl;
+         exit(1);
+       }
+       for (int j = 0; j < igraph_vcount(&g); j++) {
+         if (isnan(VAN(&g, vlabel, j))) {
+           cerr << "ERROR: Attribute of the vertex " << j << " is missing." << endl;
+           exit(1);
+         }
+       }
+     }
+   }
+ } else {
+  vlabel = NULL;
+}
+return vlabel;
 }
 // check and get edge labels
 const char *getElabel(igraph_t g, igraph_vector_t etypes, igraph_strvector_t enames) {
@@ -210,14 +209,14 @@ const char *getElabel(igraph_t g, igraph_vector_t etypes, igraph_strvector_t ena
     }
     for (int j = 0; j < igraph_ecount(&g); j++) {
       if (isnan(EAN(&g, STR(enames, 0), j))) {
-	cerr << "ERROR: Attribute of the vertex " << j << " is missing." << endl;
-	exit(1);
-      }
-    }
-  } else {
-    elabel = NULL;
-  }
-  return elabel;
+       cerr << "ERROR: Attribute of the vertex " << j << " is missing." << endl;
+       exit(1);
+     }
+   }
+ } else {
+  elabel = NULL;
+}
+return elabel;
 }
 // wrapper function from igraph to Eigen
 void igraphToEigen(igraph_t g, MatrixXi& e, vector<int>& v_label, int *vcount, int *ecount, int *dmax) {
@@ -245,11 +244,12 @@ void igraphToEigen(igraph_t g, MatrixXi& e, vector<int>& v_label, int *vcount, i
   igraph_cattribute_list(&g, &gnames, &gtypes, &vnames, &vtypes, &enames, &etypes);
   // check and get vertex labels
   const char *vlabel;
-  vlabel = getVlabel(g, vtypes, vnames);
+  //vlabel = getVlabel(g, vtypes, vnames);
+  vlabel = NULL;
   // check edge labels
   const char *elabel;
-  elabel = getElabel(g, etypes, enames);
-
+  //elabel = getElabel(g, etypes, enames);
+  elabel = NULL;
   // copy from igraph to Eigen
   // - edge
   igraph_get_edgelist(&g, &edge, 0);
@@ -380,7 +380,7 @@ double geometricRandomWalkKernel(MatrixXi& e1, MatrixXi& e2, vector<int>& v1_lab
   // inverse of I - lambda * Ax by fixed-point iterations
   VectorXd I_vec(n_vx);
   for (int i  = 0; i < n_vx; i++) I_vec[i] = 1;
-  VectorXd x = I_vec;
+    VectorXd x = I_vec;
   VectorXd x_pre(n_vx); x_pre.setZero();
 
   double eps = pow(10, -10);
@@ -508,71 +508,71 @@ void WLKernelMatrix(vector<MatrixXi>& E, vector<vector<int> >& V_label, vector<i
     count[graph_index[index_org[index[i]]]]++;
     if (i == v_all - 1 || label_list(index[i], 0) != label_list(index[i + 1], 0)) {
       for (set<int>::iterator itr = count_index.begin(), end = count_index.end(); itr != end; ++itr) {
-	for (set<int>::iterator itr2 = itr, end2 = count_index.end(); itr2 != end2; ++itr2) {
-	  k_value = count[*itr] * count[*itr2];
-	  K_mat(*itr, *itr2) += k_value;
-	  K_mat(*itr2, *itr) += k_value;
-	}
-	count[*itr] = 0;
-      }
-      count_index.clear();
-    }
-  }
+       for (set<int>::iterator itr2 = itr, end2 = count_index.end(); itr2 != end2; ++itr2) {
+         k_value = count[*itr] * count[*itr2];
+         K_mat(*itr, *itr2) += k_value;
+         K_mat(*itr2, *itr) += k_value;
+       }
+       count[*itr] = 0;
+     }
+     count_index.clear();
+   }
+ }
 
-  int v_raised_1, v_raised_2;
-  for (int h = 0; h < h_max; h++) {
-    nei_list.setZero();
+ int v_raised_1, v_raised_2;
+ for (int h = 0; h < h_max; h++) {
+  nei_list.setZero();
 
     // first put vertex label
-    nei_list.col(0) = label_list.col(h);
+  nei_list.col(0) = label_list.col(h);
     // second put neibor labels
-    raise = 0;
-    for (int i = 0; i < n; i++) {
-      fill(counter.begin(), counter.end(), 1);
-      for (int j = 0; j < num_e[i]; j++) {
-	v_raised_1 = E[i](j, 0) + raise;
-	v_raised_2 = E[i](j, 1) + raise;
-	nei_list(v_raised_1, counter[E[i](j, 0)]) = label_list(v_raised_2, h);
-	nei_list(v_raised_2, counter[E[i](j, 1)]) = label_list(v_raised_1, h);
-	counter[E[i](j, 0)]++;
-	counter[E[i](j, 1)]++;
-      }
-      raise += num_v[i];
-    }
+  raise = 0;
+  for (int i = 0; i < n; i++) {
+    fill(counter.begin(), counter.end(), 1);
+    for (int j = 0; j < num_e[i]; j++) {
+     v_raised_1 = E[i](j, 0) + raise;
+     v_raised_2 = E[i](j, 1) + raise;
+     nei_list(v_raised_1, counter[E[i](j, 0)]) = label_list(v_raised_2, h);
+     nei_list(v_raised_2, counter[E[i](j, 1)]) = label_list(v_raised_1, h);
+     counter[E[i](j, 0)]++;
+     counter[E[i](j, 1)]++;
+   }
+   raise += num_v[i];
+ }
 
     // radix sort
-    for (int i = 0; i < v_all; i++) {
-      index[i] = i;
-      index_org[i] = i;
-    }
-    for (int k = nei_list.cols() - 1; k >= 0; k--) {
-      for (int i = 0; i < v_all; i++) {
-	x[i] = nei_list(i, k);
-      }
-      bucketsort(x, index, label_max);
-    }
+ for (int i = 0; i < v_all; i++) {
+  index[i] = i;
+  index_org[i] = i;
+}
+for (int k = nei_list.cols() - 1; k >= 0; k--) {
+  for (int i = 0; i < v_all; i++) {
+   x[i] = nei_list(i, k);
+ }
+ bucketsort(x, index, label_max);
+}
     // re-labeling and increment kernel values
-    label_max++;
-    for (int i = 0; i < v_all; i++) {
-      label_list(index_org[index[i]], h + 1) = label_max;
-      count_index.insert(graph_index[index_org[index[i]]]);
-      count[graph_index[index_org[index[i]]]]++;
-      if (i == v_all - 1 ||
-	  (nei_list.row(index[i]) - nei_list.row(index[i + 1])).sum() != 0) {
-	for (set<int>::iterator itr = count_index.begin(), end = count_index.end(); itr != end; ++itr) {
-	  for (set<int>::iterator itr2 = itr, end2 = count_index.end(); itr2 != end2; ++itr2) {
-	    k_value = count[*itr] * count[*itr2];
-	    K_mat(*itr, *itr2) += k_value;
-	    K_mat(*itr2, *itr) += k_value;
-	  }
-	  count[*itr] = 0;
-	}
-	count_index.clear();	
-	label_max++;
-      }
-    }
-  }
-  K_mat.diagonal() /= 2;
+label_max++;
+for (int i = 0; i < v_all; i++) {
+  label_list(index_org[index[i]], h + 1) = label_max;
+  count_index.insert(graph_index[index_org[index[i]]]);
+  count[graph_index[index_org[index[i]]]]++;
+  if (i == v_all - 1 ||
+   (nei_list.row(index[i]) - nei_list.row(index[i + 1])).sum() != 0) {
+   for (set<int>::iterator itr = count_index.begin(), end = count_index.end(); itr != end; ++itr) {
+     for (set<int>::iterator itr2 = itr, end2 = count_index.end(); itr2 != end2; ++itr2) {
+       k_value = count[*itr] * count[*itr2];
+       K_mat(*itr, *itr2) += k_value;
+       K_mat(*itr2, *itr) += k_value;
+     }
+     count[*itr] = 0;
+   }
+   count_index.clear();	
+   label_max++;
+ }
+}
+}
+K_mat.diagonal() /= 2;
 }
 
 
@@ -602,12 +602,12 @@ int productMapping(MatrixXi& e1, MatrixXi& e2, vector<int>& v1_label, vector<int
   for (int i = 0; i < (int)v1_label.size(); i++) {
     for (int j = 0; j < (int)v2_label.size(); j++) {
       if (v1_label[i] == v2_label[j]) {
-	H(i, j) = n_vx;
-	n_vx++;
-      }
-    }
-  }
-  return n_vx;
+       H(i, j) = n_vx;
+       n_vx++;
+     }
+   }
+ }
+ return n_vx;
 }
 // compute the adjacency matrix Ax of the direct product graph (sparse)
 void productAdjacency(MatrixXi& e1, MatrixXi& e2, vector<int>& v1_label, vector<int>& v2_label, MatrixXi& H, SparseMatrix<double>& Ax) {
@@ -615,20 +615,20 @@ void productAdjacency(MatrixXi& e1, MatrixXi& e2, vector<int>& v1_label, vector<
   for (int i = 0; i < e1.rows(); i++) {
     for (int j = 0; j < e2.rows(); j++) {      
       if (   v1_label[e1(i, 0)] == v2_label[e2(j, 0)]
-	  && v1_label[e1(i, 1)] == v2_label[e2(j, 1)]
-	  && e1(i, 2) == e2(j, 2)) {
-	v.push_back(T(H(e1(i, 0), e2(j, 0)), H(e1(i, 1), e2(j, 1)), 1.0));
-	v.push_back(T(H(e1(i, 1), e2(j, 1)), H(e1(i, 0), e2(j, 0)), 1.0));
-      }
-      if (   v1_label[e1(i, 0)] == v2_label[e2(j, 1)]
-	  && v1_label[e1(i, 1)] == v2_label[e2(j, 0)]
-	  && e1(i, 2) == e2(j, 2)) {
-	v.push_back(T(H(e1(i, 0), e2(j, 1)), H(e1(i, 1), e2(j, 0)), 1.0));
-	v.push_back(T(H(e1(i, 1), e2(j, 0)), H(e1(i, 0), e2(j, 1)), 1.0));
-      }
-    }
-  }
-  Ax.setFromTriplets(v.begin(), v.end());
+       && v1_label[e1(i, 1)] == v2_label[e2(j, 1)]
+       && e1(i, 2) == e2(j, 2)) {
+       v.push_back(T(H(e1(i, 0), e2(j, 0)), H(e1(i, 1), e2(j, 1)), 1.0));
+     v.push_back(T(H(e1(i, 1), e2(j, 1)), H(e1(i, 0), e2(j, 0)), 1.0));
+   }
+   if (   v1_label[e1(i, 0)] == v2_label[e2(j, 1)]
+     && v1_label[e1(i, 1)] == v2_label[e2(j, 0)]
+     && e1(i, 2) == e2(j, 2)) {
+     v.push_back(T(H(e1(i, 0), e2(j, 1)), H(e1(i, 1), e2(j, 0)), 1.0));
+   v.push_back(T(H(e1(i, 1), e2(j, 0)), H(e1(i, 0), e2(j, 1)), 1.0));
+ }
+}
+}
+Ax.setFromTriplets(v.begin(), v.end());
 }
 // bucket sort used in Weisfeiler-Leiman graph kernel
 void bucketsort(vector<int>& x, vector<int>& index, int label_max) {
